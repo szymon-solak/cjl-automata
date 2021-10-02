@@ -1,0 +1,23 @@
+name: Run Tests
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '16.0.2'
+
+      - name: Prepare Clojure
+        uses: DeLaGuardo/setup-clojure@3.5
+        with:
+          cli: 1.10.3.943
+          lein: 2.9.7
+
+      - name: Run tests
+        run: lein test

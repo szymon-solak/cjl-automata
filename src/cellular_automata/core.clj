@@ -5,8 +5,6 @@
 
 (defn generate-grid [width height] (vec (repeat height (vec (repeat width #{})))))
 
-(defn map-grid [mapper grid] (map (fn [row] (map mapper row)) grid))
-
 (defn permutations [a b] (for [x a y b] (vector x y)))
 
 (defn get-neightbour-coords [grid row col] (filter (fn [pair] (not= pair (vec [row col])))
@@ -29,15 +27,16 @@
                                                              (fn [col-idx _col] (rule grid row-idx col-idx))
                                                              row))) grid)))
 
-(defn run-automata [grid rule render] (loop [next-grid (process-turn grid rule)] (do (render next-grid)
-                                                                                     (recur next-grid))))
+(defn run-automata [grid rule render] (loop [next-grid (process-turn grid rule)]
+                                        (render next-grid)
+                                        (recur next-grid)))
 
 (def seed [[0 1 0] [0 1 0] [0 1 0]])
 
 (defn print-grid [grid] (println (string/join \newline grid)))
 
 (def ESC "\033")
-(defn console-renderer [grid] (do (printf (str ESC "[" (count grid) "A" ESC "[K")) (print-grid grid)))
+(defn console-renderer [grid] (printf (str ESC "[" (count grid) "A" ESC "[K")) (print-grid grid))
 
 (defn -main
   [& args]

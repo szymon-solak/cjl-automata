@@ -4,8 +4,6 @@
    [clojure.string :as string]
    [cellular-automata.grid :refer [get-alive-neightbours]]))
 
-(defn generate-grid [width height] (vec (repeat height (vec (repeat width #{})))))
-
 (defn apply-conway-rule [grid row col] (let [neightbours (get-alive-neightbours grid row col)
                                              cell (get-in grid (vec [row col]))]
                                          (cond

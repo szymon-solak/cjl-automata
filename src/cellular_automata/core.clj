@@ -1,17 +1,10 @@
 (ns cellular-automata.core
   (:gen-class)
   (:require
-   [clojure.string :as string]))
+   [clojure.string :as string]
+   [cellular-automata.grid :refer [get-alive-neightbours]]))
 
 (defn generate-grid [width height] (vec (repeat height (vec (repeat width #{})))))
-
-(defn permutations [a b] (for [x a y b] (vector x y)))
-
-(defn get-neightbour-coords [grid row col] (filter (fn [pair] (not= pair (vec [row col])))
-                                                   (permutations (filter #(-> (> (count grid) %)) (filter nat-int? [(dec row) row (inc row)]))
-                                                                 (filter #(-> (> (count (first grid)) %)) (filter nat-int? [(dec col) col (inc col)])))))
-
-(defn get-alive-neightbours [grid row col] (reduce + (map (fn [coords] (get-in grid coords)) (vec (get-neightbour-coords grid row col)))))
 
 (defn apply-conway-rule [grid row col] (let [neightbours (get-alive-neightbours grid row col)
                                              cell (get-in grid (vec [row col]))]

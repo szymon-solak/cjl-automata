@@ -17,6 +17,7 @@
 (defn run-automata [grid rule render]
   (loop [next-grid grid]
     (render next-grid)
+    (Thread/sleep 50)
     (recur (process-turn next-grid rule))))
 
 (def gosper-glider-gun [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
@@ -33,4 +34,9 @@
 
 (defn -main
   [& args]
-  (run-automata gosper-glider-gun rules/conway renderers/console))
+  (let [window (renderers/gui-create-window 1200 768)]
+    ((run-automata gosper-glider-gun rules/conway (partial renderers/gui-draw window))
+     (renderers/gui-destroy-window window)))
+
+  ;; (run-automata gosper-glider-gun rules/conway renderers/console)
+  )

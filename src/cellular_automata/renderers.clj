@@ -46,8 +46,9 @@
 (defn gui-draw [window grid]
   (let [context (DirectContext/makeGL)
         [width height] (glfw-window-size window)
-        cell-height (int (/ height (count grid)))
-        cell-width (int (/ width (count (first grid))))
+        max-cell-height (int (/ height (count grid)))
+        max-cell-width (int (/ width (count (first grid))))
+        cell-side (min max-cell-height max-cell-width)
         fb-id   (GL11/glGetInteger 0x8CA6)
         [scale-x scale-y] (display-scale window)
         target  (BackendRenderTarget/makeGL (* scale-x width) (* scale-y height) 0 8 fb-id FramebufferFormat/GR_GL_RGBA8)
@@ -67,7 +68,7 @@
                   color (if (= cell 1) alive-color dead-color)]
               (.drawRect
                canvas
-               (Rect/makeXYWH (* cell-width col) (* cell-height row) cell-width cell-height)
+               (Rect/makeXYWH (* cell-side col) (* cell-side row) cell-side cell-side)
                color))))
 
         (.restoreToCount canvas layer))

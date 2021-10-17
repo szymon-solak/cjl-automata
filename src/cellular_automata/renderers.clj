@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as string])
   (:import
-   [org.jetbrains.skija BackendRenderTarget ColorSpace DirectContext FramebufferFormat Paint Rect Surface SurfaceColorFormat SurfaceOrigin]
+   [org.jetbrains.skija BackendRenderTarget ColorSpace DirectContext FramebufferFormat Paint PaintMode Rect Surface SurfaceColorFormat SurfaceOrigin]
    [org.lwjgl.glfw Callbacks GLFW GLFWErrorCallback]
    [org.lwjgl.opengl GL GL11]
    [org.lwjgl BufferUtils]
@@ -46,8 +46,9 @@
 (defn gui-draw [window grid]
   (let [context (DirectContext/makeGL)
         [width height] (glfw-window-size window)
-        cell-height (int (/ height (count grid)))
-        cell-width (int (/ width (count (first grid))))
+        max-cell-height (int (/ height (count grid)))
+        max-cell-width (int (/ width (count (first grid))))
+        cell-side (min max-cell-height max-cell-width)
         fb-id   (GL11/glGetInteger 0x8CA6)
         [scale-x scale-y] (display-scale window)
         target  (BackendRenderTarget/makeGL (* scale-x width) (* scale-y height) 0 8 fb-id FramebufferFormat/GR_GL_RGBA8)
@@ -67,8 +68,22 @@
                   color (if (= cell 1) alive-color dead-color)]
               (.drawRect
                canvas
-               (Rect/makeXYWH (* cell-width col) (* cell-height row) cell-width cell-height)
+               (Rect/makeXYWH (* cell-side col) (* cell-side row) cell-side cell-side)
                color))))
+
+        (doseq [x (range 0 width cell-side)]
+          (with-open [stroke (doto (Paint.)
+                               (.setColor (color 0x78727600))
+                               (.setMode (PaintMode/STROKE))
+                               (.setStrokeWidth 1))]
+            (.drawLine canvas x 0 x height stroke)))
+
+        (doseq [y (range 0 height cell-side)]
+          (with-open [stroke (doto (Paint.)
+                               (.setColor (color 0x78727600))
+                               (.setMode (PaintMode/STROKE))
+                               (.setStrokeWidth 1))]
+            (.drawLine canvas 0 y width y stroke)))
 
         (.restoreToCount canvas layer))
       (.flush context)

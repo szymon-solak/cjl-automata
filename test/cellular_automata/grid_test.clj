@@ -17,4 +17,9 @@
   (testing "edges of the grid"
     (is (= (get-alive-neightbours test-grid 0 0) 3))
     (is (= (get-alive-neightbours test-grid 0 2) 2))
-    (is (= (get-alive-neightbours test-grid 5 5) 1))))
+    (is (= (get-alive-neightbours test-grid 5 5) 1)))
+
+  (testing "does not count the tested cell"
+    (is (= (get-alive-neightbours test-grid 3 3) 0))
+    (is (= (get-alive-neightbours test-grid 5 1) 3))
+    (is (= (get-alive-neightbours test-grid 1 5) 2))))

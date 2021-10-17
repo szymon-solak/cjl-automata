@@ -34,9 +34,17 @@
 
 (defn -main
   [& args]
+
+  ;; Show initial pattern, wait for any input to start
+  (let [window (renderers/gui-create-window 1200 768)]
+    (renderers/gui-draw window gosper-glider-gun)
+    (read-line))
+
+  ;; Run the pattern in a gui
   (let [window (renderers/gui-create-window 1200 768)]
     ((run-automata gosper-glider-gun rules/conway (partial renderers/gui-draw window))
      (renderers/gui-destroy-window window)))
 
+  ;; Run the pattern in a terminal
   ;; (run-automata gosper-glider-gun rules/conway renderers/console)
   )

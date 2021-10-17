@@ -2,7 +2,7 @@
   (:require
    [clojure.string :as string])
   (:import
-   [org.jetbrains.skija BackendRenderTarget ColorSpace DirectContext FramebufferFormat Paint Rect Surface SurfaceColorFormat SurfaceOrigin]
+   [org.jetbrains.skija BackendRenderTarget ColorSpace DirectContext FramebufferFormat Paint PaintMode Rect Surface SurfaceColorFormat SurfaceOrigin]
    [org.lwjgl.glfw Callbacks GLFW GLFWErrorCallback]
    [org.lwjgl.opengl GL GL11]
    [org.lwjgl BufferUtils]
@@ -70,6 +70,20 @@
                canvas
                (Rect/makeXYWH (* cell-side col) (* cell-side row) cell-side cell-side)
                color))))
+
+        (doseq [x (range 0 width cell-side)]
+          (with-open [stroke (doto (Paint.)
+                               (.setColor (color 0x78727600))
+                               (.setMode (PaintMode/STROKE))
+                               (.setStrokeWidth 1))]
+            (.drawLine canvas x 0 x height stroke)))
+
+        (doseq [y (range 0 height cell-side)]
+          (with-open [stroke (doto (Paint.)
+                               (.setColor (color 0x78727600))
+                               (.setMode (PaintMode/STROKE))
+                               (.setStrokeWidth 1))]
+            (.drawLine canvas 0 y width y stroke)))
 
         (.restoreToCount canvas layer))
       (.flush context)
